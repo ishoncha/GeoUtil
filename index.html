@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haversine Distance Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .earth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #earth-animation {
+            width: 200px;
+            height: 200px;
+        }
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: auto;
+            text-align: left;
+        }
+        .info-card h3 {
+            text-align: center;
+        }
+        .info-card p {
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Haversine Distance Calculator 🌍</h2>
+        <p>Enter Latitude, Longitude (comma, space, or slash separated)</p>
+        
+        <input type="text" id="point1" placeholder="Enter Point 1 (e.g. 12.9716, 77.5946)">
+        <input type="text" id="point2" placeholder="Enter Point 2 (e.g. 28.7041 - 77.1025)">
+        <button onclick="calculateDistance()">Calculate Distance</button>
+        
+        <p id="result"></p>
+    </div>
+
+    <div class="earth-container">
+        <div id="earth-animation"></div>
+    </div>
+
+    <div class="info-card">
+        <h3>📍 What is Haversine Distance?</h3>
+        <p>The **Haversine formula** helps calculate the shortest distance **between two points on a sphere** (like Earth) using latitude & longitude.</p>
+        <p>🌍 Imagine two cities on a globe. The distance between them is not a straight line but follows the curve of the Earth.</p>
+        <p>🔴 <b>Point A</b> → 🔵 <b>Point B</b> → The curved path between them is the **Haversine Distance**.</p>
+    </div>
+
+    <script>
+        function parseCoordinates(input) {
+            const match = input.match(/-?\d+(\.\d+)?/g);
+            return match ? match.map(Number) : null;
+        }
+
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371000; // Earth's radius in meters
+            const toRad = angle => angle * Math.PI / 180;
+
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            
+            return R * c; // Distance in meters
+        }
+
+        function celebrate() {
+            if (typeof confetti === "function") {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                console.log("🎉 Celebration! (Confetti not loaded)");
+            }
+        }
+
+        function calculateDistance() {
+            const input1 = document.getElementById("point1").value;
+            const input2 = document.getElementById("point2").value;
+
+            const coords1 = parseCoordinates(input1);
+            const coords2 = parseCoordinates(input2);
+
+            if (!coords1 || coords1.length < 2 || !coords2 || coords2.length < 2) {
+                document.getElementById("result").innerText = "Invalid input. Please enter valid latitude & longitude.";
+                return;
+            }
+
+            const distance = haversine(coords1[0], coords1[1], coords2[0], coords2[1]);
+            document.getElementById("result").innerText = `🎉 Distance: ${(distance / 1000).toFixed(2)} km 🎉`;
+
+            celebrate(); // Trigger confetti animation 🎊
+        }
+
+        // Load Lottie animation properly
+        document.addEventListener("DOMContentLoaded", function () {
+            lottie.loadAnimation({
+                container: document.getElementById("earth-animation"),
+                renderer: "svg",
+                loop: true,
+                autoplay: true,
+                path: "https://assets3.lottiefiles.com/packages/lf20_k9wsvqnk.json" // Updated Working URL
+            });
+        });
+    </script>
+
+</body>
+</html>
