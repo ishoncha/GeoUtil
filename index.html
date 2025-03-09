@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Haversine Distance Calculator</title>
+
+    <script async src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,7 +51,7 @@
 <body>
 
     <div class="container">
-        <h2>Haversine Distance Calculator</h2>
+        <h2>Haversine Distance Calculator 🎉</h2>
         <p>Enter Latitude, Longitude (any separator like comma, space, slash)</p>
         
         <input type="text" id="point1" placeholder="Enter Point 1 (e.g. 12.9716, 77.5946)">
@@ -60,7 +63,6 @@
 
     <script>
         function parseCoordinates(input) {
-            // Extract numbers from any format (comma, space, slash, etc.)
             const match = input.match(/-?\d+(\.\d+)?/g);
             return match ? match.map(Number) : null;
         }
@@ -79,6 +81,14 @@
             return R * c; // Distance in meters
         }
 
+        function celebrate() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
         function calculateDistance() {
             const input1 = document.getElementById("point1").value;
             const input2 = document.getElementById("point2").value;
@@ -92,7 +102,9 @@
             }
 
             const distance = haversine(coords1[0], coords1[1], coords2[0], coords2[1]);
-            document.getElementById("result").innerText = `Distance: ${(distance / 1000).toFixed(2)} km`;
+            document.getElementById("result").innerText = `🎉 Distance: ${(distance / 1000).toFixed(2)} km 🎉`;
+
+            celebrate(); // Trigger confetti animation 🎊
         }
     </script>
 
